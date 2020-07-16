@@ -7,7 +7,7 @@
         factory(exports);
     } else {
         // Browser globals
-        factory(root.IBAN = {});
+        factory(root.ICAN = {});
     }
 }(this, function(exports){
 
@@ -46,17 +46,17 @@
         Z = 'Z'.charCodeAt(0);
 
     /**
-     * Prepare an IBAN for mod 97 computation by moving the first 4 chars to the end and transforming the letters to
+     * Prepare an ICAN for mod 97 computation by moving the first 4 chars to the end and transforming the letters to
      * numbers (A = 10, B = 11, ..., Z = 35), as specified in ISO13616.
      *
-     * @param {string} iban the IBAN
-     * @returns {string} the prepared IBAN
+     * @param {string} ican the ICAN
+     * @returns {string} the prepared ICAN
      */
-    function iso13616Prepare(iban) {
-        iban = iban.toUpperCase();
-        iban = iban.substr(4) + iban.substr(0,4);
+    function iso13616Prepare(ican) {
+        ican = ican.toUpperCase();
+        ican = ican.substr(4) + ican.substr(0,4);
 
-        return iban.split('').map(function(n){
+        return ican.split('').map(function(n){
             var code = n.charCodeAt(0);
             if (code >= A && code <= Z){
                 // A = 10, B = 11, ... Z = 35
@@ -68,13 +68,13 @@
     }
 
     /**
-     * Calculates the MOD 97 10 of the passed IBAN as specified in ISO7064.
+     * Calculates the MOD 97 10 of the passed ICAN as specified in ISO7064.
      *
-     * @param iban
+     * @param ican
      * @returns {number}
      */
-    function iso7064Mod97_10(iban) {
-        var remainder = iban,
+    function iso7064Mod97_10(ican) {
+        var remainder = ican,
             block;
 
         while (remainder.length > 2){
@@ -86,9 +86,9 @@
     }
 
     /**
-     * Parse the BBAN structure used to configure each IBAN Specification and returns a matching regular expression.
+     * Parse the BCAN structure used to configure each ICAN Specification and returns a matching regular expression.
      * A structure is composed of blocks of 3 characters (one letter and 2 digits). Each block represents
-     * a logical group in the typical representation of the BBAN. For each group, the letter indicates which characters
+     * a logical group in the typical representation of the BCAN. For each group, the letter indicates which characters
      * are allowed in this group and the following 2-digits number tells the length of the group.
      *
      * @param {string} structure the structure to parse
@@ -107,6 +107,7 @@
                 case "A": format = "0-9A-Za-z"; break;
                 case "B": format = "0-9A-Z"; break;
                 case "C": format = "A-Za-z"; break;
+                case "H": format = "0-9A-Fa-f"; break;
                 case "F": format = "0-9"; break;
                 case "L": format = "a-z"; break;
                 case "U": format = "A-Z"; break;
@@ -121,21 +122,21 @@
 
     /**
      *
-     * @param iban
+     * @param ican
      * @returns {string}
      */
-    function electronicFormat(iban){
-        return iban.replace(NON_ALPHANUM, '').toUpperCase();
+    function electronicFormat(ican){
+        return ican.replace(NON_ALPHANUM, '').toUpperCase();
     }
 
 
     /**
-     * Create a new Specification for a valid IBAN number.
+     * Create a new Specification for a valid ICAN number.
      *
      * @param countryCode the code of the country
-     * @param length the length of the IBAN
-     * @param structure the structure of the underlying BBAN (for validation and formatting)
-     * @param example an example valid IBAN
+     * @param length the length of the ICAN
+     * @param structure the structure of the underlying BCAN (for validation and formatting)
+     * @param example an example valid ICAN
      * @constructor
      */
     function Specification(countryCode, length, structure, example){
@@ -154,65 +155,65 @@
     };
 
     /**
-     * Check if the passed iban is valid according to this specification.
+     * Check if the passed ican is valid according to this specification.
      *
-     * @param {String} iban the iban to validate
+     * @param {String} ican the ican to validate
      * @returns {boolean} true if valid, false otherwise
      */
-    Specification.prototype.isValid = function(iban){
-        return this.length == iban.length
-            && this.countryCode === iban.slice(0,2)
-            && this._regex().test(iban.slice(4))
-            && iso7064Mod97_10(iso13616Prepare(iban)) == 1;
+    Specification.prototype.isValid = function(ican){
+        return this.length == ican.length
+            && this.countryCode === ican.slice(0,2)
+            && this._regex().test(ican.slice(4))
+            && iso7064Mod97_10(iso13616Prepare(ican)) == 1;
     };
 
     /**
-     * Convert the passed IBAN to a country-specific BBAN.
+     * Convert the passed ICAN to a country-specific BCAN.
      *
-     * @param iban the IBAN to convert
-     * @param separator the separator to use between BBAN blocks
-     * @returns {string} the BBAN
+     * @param ican the ICAN to convert
+     * @param separator the separator to use between BCAN blocks
+     * @returns {string} the BCAN
      */
-    Specification.prototype.toBBAN = function(iban, separator) {
-        return this._regex().exec(iban.slice(4)).slice(1).join(separator);
+    Specification.prototype.toBCAN = function(ican, separator) {
+        return this._regex().exec(ican.slice(4)).slice(1).join(separator);
     };
 
     /**
-     * Convert the passed BBAN to an IBAN for this country specification.
-     * Please note that <i>"generation of the IBAN shall be the exclusive responsibility of the bank/branch servicing the account"</i>.
-     * This method implements the preferred algorithm described in http://en.wikipedia.org/wiki/International_Bank_Account_Number#Generating_IBAN_check_digits
+     * Convert the passed BCAN to an ICAN for this country specification.
+     * Please note that <i>"generation of the ICAN shall be the exclusive responsibility of the bank/branch servicing the account"</i>.
+     * This method implements the preferred algorithm described in http://en.wikipedia.org/wiki/International_Bank_Account_Number#Generating_ICAN_check_digits
      *
-     * @param bban the BBAN to convert to IBAN
-     * @returns {string} the IBAN
+     * @param bcan the BCAN to convert to ICAN
+     * @returns {string} the ICAN
      */
-    Specification.prototype.fromBBAN = function(bban) {
-        if (!this.isValidBBAN(bban)){
-            throw new Error('Invalid BBAN');
+    Specification.prototype.fromBCAN = function(bcan) {
+        if (!this.isValidBCAN(bcan)){
+            throw new Error('Invalid BCAN');
         }
 
-        var remainder = iso7064Mod97_10(iso13616Prepare(this.countryCode + '00' + bban)),
+        var remainder = iso7064Mod97_10(iso13616Prepare(this.countryCode + '00' + bcan)),
             checkDigit = ('0' + (98 - remainder)).slice(-2);
 
-        return this.countryCode + checkDigit + bban;
+        return this.countryCode + checkDigit + bcan;
     };
 
     /**
-     * Check of the passed BBAN is valid.
-     * This function only checks the format of the BBAN (length and matching the letetr/number specs) but does not
+     * Check of the passed BCAN is valid.
+     * This function only checks the format of the BCAN (length and matching the letetr/number specs) but does not
      * verify the check digit.
      *
-     * @param bban the BBAN to validate
-     * @returns {boolean} true if the passed bban is a valid BBAN according to this specification, false otherwise
+     * @param bcan the BCAN to validate
+     * @returns {boolean} true if the passed bcan is a valid BCAN according to this specification, false otherwise
      */
-    Specification.prototype.isValidBBAN = function(bban) {
-        return this.length - 4 == bban.length
-            && this._regex().test(bban);
+    Specification.prototype.isValidBCAN = function(bcan) {
+        return this.length - 4 == bcan.length
+            && this._regex().test(bcan);
     };
 
     var countries = {};
 
-    function addSpecification(IBAN){
-        countries[IBAN.countryCode] = IBAN;
+    function addSpecification(ICAN){
+        countries[ICAN.countryCode] = ICAN;
     }
 
     addSpecification(new Specification("AD", 24, "F04F04A12",          "AD1200012030200359100100"));
@@ -294,7 +295,7 @@
     addSpecification(new Specification("XK", 20, "F04F10F02",          "XK051212012345678906"));
 
 
-    // The following countries are not included in the official IBAN registry but use the IBAN specification
+    // The following countries are not included in the official ICAN registry but use the ICAN specification
 
     // Angola
     addSpecification(new Specification("AO", 25, "F21",                "AO69123456789012345678901"));
@@ -323,7 +324,7 @@
     // Senegal
     addSpecification(new Specification("SN", 28, "U01F23",             "SN52A12345678901234567890123"));
 
-    // The following are regional and administrative French Republic subdivision IBAN specification (same structure as FR, only country code vary)
+    // The following are regional and administrative French Republic subdivision ICAN specification (same structure as FR, only country code vary)
     addSpecification(new Specification("GF", 27, "F05F05A11F02",       "GF121234512345123456789AB13"));
     addSpecification(new Specification("GP", 27, "F05F05A11F02",       "GP791234512345123456789AB13"));
     addSpecification(new Specification("MQ", 27, "F05F05A11F02",       "MQ221234512345123456789AB13"));
@@ -336,6 +337,15 @@
     addSpecification(new Specification("MF", 27, "F05F05A11F02",       "MF551234512345123456789AB13"));
     addSpecification(new Specification("PM", 27, "F05F05A11F02",       "PM071234512345123456789AB13"));
     addSpecification(new Specification("WF", 27, "F05F05A11F02",       "WF621234512345123456789AB13"));
+
+    // Cryptocurrency addresses
+
+    // Core Blockchain Livenet
+    addSpecification(new Specification("CB", 44, "H40",                "CB661234567890ABCDEF1234567890ABCDEF12345678"));
+    // Core Blockchain Testnet
+    addSpecification(new Specification("AB", 44, "H40",                "AB841234567890ABCDEF1234567890ABCDEF12345678"));
+    // Core Enterprise Blockchain Privatenet
+    addSpecification(new Specification("CE", 44, "H40",                "CE571234567890ABCDEF1234567890ABCDEF12345678"));
 
     var NON_ALPHANUM = /[^a-zA-Z0-9]/g,
         EVERY_FOUR_CHARS =/(.{4})(?!$)/g;
@@ -351,86 +361,86 @@
     }
 
     /**
-     * Check if an IBAN is valid.
+     * Check if an ICAN is valid.
      *
-     * @param {String} iban the IBAN to validate.
-     * @returns {boolean} true if the passed IBAN is valid, false otherwise
+     * @param {String} ican the ICAN to validate.
+     * @returns {boolean} true if the passed ICAN is valid, false otherwise
      */
-    exports.isValid = function(iban){
-        if (!isString(iban)){
+    exports.isValid = function(ican){
+        if (!isString(ican)){
             return false;
         }
-        iban = electronicFormat(iban);
-        var countryStructure = countries[iban.slice(0,2)];
-        return !!countryStructure && countryStructure.isValid(iban);
+        ican = electronicFormat(ican);
+        var countryStructure = countries[ican.slice(0,2)];
+        return !!countryStructure && countryStructure.isValid(ican);
     };
 
     /**
-     * Convert an IBAN to a BBAN.
+     * Convert an ICAN to a BCAN.
      *
-     * @param iban
-     * @param {String} [separator] the separator to use between the blocks of the BBAN, defaults to ' '
+     * @param ican
+     * @param {String} [separator] the separator to use between the blocks of the BCAN, defaults to ' '
      * @returns {string|*}
      */
-    exports.toBBAN = function(iban, separator){
+    exports.toBCAN = function(ican, separator){
         if (typeof separator == 'undefined'){
             separator = ' ';
         }
-        iban = electronicFormat(iban);
-        var countryStructure = countries[iban.slice(0,2)];
+        ican = electronicFormat(ican);
+        var countryStructure = countries[ican.slice(0,2)];
         if (!countryStructure) {
-            throw new Error('No country with code ' + iban.slice(0,2));
+            throw new Error('No country with code ' + ican.slice(0,2));
         }
-        return countryStructure.toBBAN(iban, separator);
+        return countryStructure.toBCAN(ican, separator);
     };
 
     /**
-     * Convert the passed BBAN to an IBAN for this country specification.
-     * Please note that <i>"generation of the IBAN shall be the exclusive responsibility of the bank/branch servicing the account"</i>.
-     * This method implements the preferred algorithm described in http://en.wikipedia.org/wiki/International_Bank_Account_Number#Generating_IBAN_check_digits
+     * Convert the passed BCAN to an ICAN for this country specification.
+     * Please note that <i>"generation of the ICAN shall be the exclusive responsibility of the bank/branch servicing the account"</i>.
+     * This method implements the preferred algorithm described in http://en.wikipedia.org/wiki/International_Bank_Account_Number#Generating_ICAN_check_digits
      *
-     * @param countryCode the country of the BBAN
-     * @param bban the BBAN to convert to IBAN
-     * @returns {string} the IBAN
+     * @param countryCode the country of the BCAN
+     * @param bcan the BCAN to convert to ICAN
+     * @returns {string} the ICAN
      */
-    exports.fromBBAN = function(countryCode, bban){
+    exports.fromBCAN = function(countryCode, bcan){
         var countryStructure = countries[countryCode];
         if (!countryStructure) {
             throw new Error('No country with code ' + countryCode);
         }
-        return countryStructure.fromBBAN(electronicFormat(bban));
+        return countryStructure.fromBCAN(electronicFormat(bcan));
     };
 
     /**
-     * Check the validity of the passed BBAN.
+     * Check the validity of the passed BCAN.
      *
-     * @param countryCode the country of the BBAN
-     * @param bban the BBAN to check the validity of
+     * @param countryCode the country of the BCAN
+     * @param bcan the BCAN to check the validity of
      */
-    exports.isValidBBAN = function(countryCode, bban){
-        if (!isString(bban)){
+    exports.isValidBCAN = function(countryCode, bcan){
+        if (!isString(bcan)){
             return false;
         }
         var countryStructure = countries[countryCode];
-        return countryStructure && countryStructure.isValidBBAN(electronicFormat(bban));
+        return countryStructure && countryStructure.isValidBCAN(electronicFormat(bcan));
     };
 
     /**
      *
-     * @param iban
+     * @param ican
      * @param separator
      * @returns {string}
      */
-    exports.printFormat = function(iban, separator){
+    exports.printFormat = function(ican, separator){
         if (typeof separator == 'undefined'){
             separator = ' ';
         }
-        return electronicFormat(iban).replace(EVERY_FOUR_CHARS, "$1" + separator);
+        return electronicFormat(ican).replace(EVERY_FOUR_CHARS, "$1" + separator);
     };
 
     exports.electronicFormat = electronicFormat;
     /**
-     * An object containing all the known IBAN specifications.
+     * An object containing all the known ICAN specifications.
      */
     exports.countries = countries;
 

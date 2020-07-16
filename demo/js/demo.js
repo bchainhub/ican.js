@@ -1,7 +1,8 @@
 (function(){
 
-  // Source https://gist.github.com/maephisto/9228207
+  // Source https://gist.github.com/raisty/f9f86c395b4596160e9fb583e7cadd2d
   var countryNames = {
+    'AB' : 'Core Blockchain (Testnet)',
     'AF' : 'Afghanistan',
     'AX' : 'Aland Islands',
     'AL' : 'Albania',
@@ -48,7 +49,9 @@
     'CL' : 'Chile',
     'CN' : 'China',
     'CX' : 'Christmas Island',
+    'CB' : 'Core Blockchain (Mainnet)',
     'CC' : 'Cocos (Keeling) Islands',
+    'CE' : 'Core Blockchain (Enterprise)',
     'CO' : 'Colombia',
     'KM' : 'Comoros',
     'CG' : 'Congo',
@@ -253,7 +256,7 @@
     el: '#demo',
     data: {
       input: '',
-      countries: Object.keys(IBAN.countries),
+      countries: Object.keys(ICAN.countries),
       countryNames: countryNames,
       selectedCountry: '',
       isValid: null
@@ -263,28 +266,28 @@
         this.isValid = null;
       },
       checkIsValid: function() {
-        if (this.couldBeIBAN) {
-          this.isValid = IBAN.isValid(this.input);
-        } else if (this.couldBeBBAN) {
-          this.isValid = IBAN.isValidBBAN(this.selectedCountry, this.input);
+        if (this.couldBeICAN) {
+          this.isValid = ICAN.isValid(this.input);
+        } else if (this.couldBeBCAN) {
+          this.isValid = ICAN.isValidBCAN(this.selectedCountry, this.input);
         } else {
           this.isValid = null;
         }
       },
-      fromBBAN: function() {
-        return IBAN.fromBBAN(this.selectedCountry, this.input);
+      fromBCAN: function() {
+        return ICAN.fromBCAN(this.selectedCountry, this.input);
       }
     },
     computed: {
       canBeValidated: function () {
-        return this.input.length > 2 && (this.couldBeIBAN || this.selectedCountry.length);
+        return this.input.length > 2 && (this.couldBeICAN || this.selectedCountry.length);
       },
-      couldBeIBAN: function() {
+      couldBeICAN: function() {
         var countryCode = this.input.substring(0, 2);
-        return this.input.length > 2 && !!IBAN.countries[countryCode.toUpperCase()];
+        return this.input.length > 2 && !!ICAN.countries[countryCode.toUpperCase()];
       },
-      couldBeBBAN: function() {
-        return this.input.length > 2 && !this.couldBeIBAN;
+      couldBeBCAN: function() {
+        return this.input.length > 2 && !this.couldBeICAN;
       }
     }
   });

@@ -1,12 +1,12 @@
 {
-  "name": "iban",
-  "main": "iban.js",
-  "version": "0.0.10",
-  "homepage": "https://github.com/arhs/iban.js",
-  "description": "IBAN & BBAN validation, formatting and conversion in JavaScript",
+  "name": "ican",
+  "main": "ican.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/cryptohub-digital/ican.js",
+  "description": "ICAN & BCAN validation, formatting and conversion in JavaScript",
   "keywords": [
-    "iban",
-    "bban",
+    "ican",
+    "bcan",
     "validation",
     "formatting",
     "conversion",
@@ -15,6 +15,7 @@
     "convert"
   ],
   "authors": [
+    "CRYPTO ▪ HUB®",
     "ARHS Developments SA"
   ],
   "license": "MIT",

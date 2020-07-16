@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
-    
-    <script src="https://unpkg.com/iban/iban.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/gh/cryptohub-digital/ican.js/ican.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 
-    <title>IBAN.js demo</title>
+    <title>ICAN.js demo</title>
 
     <style>
       .container {
@@ -42,45 +42,41 @@
     <div class="container">
       <header class="navbar mt-2">
         <section class="navbar-section">
-          <span class="navbar-brand">IBAN.js demo</span>
-        </section>
-        <section class="navbar-section">
-          <a class="btn btn-link" href="https://github.com/arhs/iban/">GitHub</a>
-          <a class="btn btn-link" href="https://www.arhs-group.com">About Arhs</a>
+          <span class="navbar-brand">ICAN.js demo</span>
         </section>
       </header>
       <div id="demo" class="empty mt-2">
-        <h1>IBAN/BBAN converter</h1>
+        <h1>ICAN/BCAN converter</h1>
 
         <div class="empty-action col-6 col-sm-12 col-mx-auto">
 
           <div class="form-group">
-            <input 
-              type="text" 
-              class="form-input" 
-              placeholder="Enter your BBAN or IBAN here" 
+            <input
+              type="text"
+              class="form-input"
+              placeholder="Enter your BCAN or ICAN here"
               pattern="[a-zA-Z0-9 _-]{2,}"
-              v-model.trim="input" 
+              v-model.trim="input"
               v-on:keyDown="resetIsValid">
           </div>
-          
-          <div v-if="couldBeBBAN" class="form-group">
+
+          <div v-if="couldBeBCAN" class="form-group">
             <select v-model="selectedCountry" class="form-select">
-              <option disabled value="">Please select the country for this BBAN</option>
+              <option disabled value="">Please select the country/crypto for this BCAN</option>
               <option v-for="country in countries" v-bind:value="country">
                 {{ countryNames[country] }}
               </option>
             </select>
           </div>
-          
+
           <button class="btn btn-primary btn-lg" v-bind:disabled="!canBeValidated" v-on:click="checkIsValid">Check validity</button>
 
           <div v-if="isValid === true" class="result valid">
-            This {{ couldBeIBAN ? 'IBAN' : 'BBAN' }} is valid.
-            <span v-if="couldBeBBAN"><br>The corresponding IBAN is {{ fromBBAN() }}</span>
+            This {{ couldBeICAN ? 'ICAN' : 'BCAN' }} is valid.
+            <span v-if="couldBeBCAN"><br>The corresponding ICAN is {{ fromBCAN() }}</span>
           </div>
           <div v-if="isValid === false" class="result invalid">
-            This {{ couldBeIBAN ? 'IBAN' : 'BBAN' }} is invalid.
+            This {{ couldBeICAN ? 'ICAN' : 'BCAN' }} is invalid.
           </div>
         </div>
       </div>
