@@ -1,5 +1,5 @@
 {
-  "name": "ican",
+  "name": "@cryptohub/ican",
   "version": "0.1.0",
   "description": "A javascript library to validate, format and convert ICAN (International Crypto Account Number) and BCAN (Basic Crypto Account Number)",
   "main": "ican.js",
