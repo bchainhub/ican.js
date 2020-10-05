@@ -12,5 +12,6 @@
   },
   "repository": "https://github.com/cryptohub-digital/ican.js",
   "author": "CRYPTO ▪ HUB®",
-  "license": "MIT"
+  "license": "MIT",
+  "private": false
 }
