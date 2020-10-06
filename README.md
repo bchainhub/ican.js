@@ -7,7 +7,7 @@ Check the demo on [demo page] to try it.
 
 [demo page]: https://cryptohub-digital.github.io/ican.js/
 
-ICAN.js follows the [ISO 13616 ICAN Registry technical specification](https://www.swift.com/standards/data-standards/ican) and adding additional crypto addresses.
+ICAN.js follows the [ISO 13616 IBAN Registry technical specification](https://www.swift.com/standards/data-standards/iban) with the addition of the Crypto addresses.
 
 ## Usage
 
