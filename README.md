@@ -46,12 +46,14 @@ Using a module loader (AMD or commonjs) or directly through the global ```ICAN``
 </script>
 ```
 
-### With TypeScript
-The library is also available from the typescript language. To do this, [download the definition](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/ican) and add a reference to this:
-```typescript
-/// <reference path="ican.d.ts" />
-ICAN.isValid('hello world');
-ICAN.isValid('BE68539007547034');
+### With React
+
+Use in the react is easy. For example:
+
+```js
+import Ican from '@cryptohub/ican';
+Ican.isValid('hello world');
+Ican.isValid('BE68539007547034');
 ```
 
 ## API
