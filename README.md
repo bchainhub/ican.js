@@ -28,7 +28,7 @@ npm i @cryptohub/ican
 ### In node.js
 
 ```js
-var ICAN = require('ican');
+var ICAN = require('@cryptohub/ican');
 ICAN.isValid('hello world'); // false
 ICAN.isValid('BE68539007547034'); // true
 ```
