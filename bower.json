@@ -1,7 +1,7 @@
 {
   "name": "ican",
   "main": "ican.js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/cryptohub-digital/ican.js",
   "description": "ICAN & BCAN validation, formatting and conversion in JavaScript",
   "keywords": [
@@ -18,7 +18,7 @@
     "CRYPTO ▪ HUB®",
     "ARHS Developments SA"
   ],
-  "license": "MIT",
+  "license": "CORE",
   "ignore": [
     "**/.*",
     "test",

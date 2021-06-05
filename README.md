@@ -1,5 +1,3 @@
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/arhs/ican.js/master/LICENSE)
-
 # ican.js
 
 ICAN and BCAN validation, formatting and conversion in Javascript.
@@ -64,3 +62,7 @@ ICAN.isValid('BE68539007547034');
     * isValidBCAN(countryCode, bcan)
     * printFormat(ican, separator)
     * electronicFormat(ican)
+
+## License
+
+[CORE license](LICENSE)
