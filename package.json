@@ -1,17 +1,39 @@
 {
   "name": "@cryptohub/ican",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A javascript library to validate, format and convert ICAN (International Crypto Account Number) and BCAN (Basic Crypto Account Number)",
-  "main": "ican.js",
+  "keywords": [
+    "ican",
+    "bcan",
+    "international",
+    "crypto",
+    "account",
+    "number",
+    "crytography",
+    "format",
+    "convert"
+  ],
   "devDependencies": {
-    "chai": "~1.8.1",
-    "mocha": "^8.0.1"
+    "standard": "^17.0.0",
+    "tape": "^5.6.1"
   },
   "scripts": {
-    "test": "mocha"
+    "build": "cp ican.js src/index.js && standard --fix 'src/index.js'",
+    "gitdiff": "npm run build && git diff --exit-code",
+    "standard": "standard 'src/index.js'",
+    "test": "npm run unit && npm run standard 'src/index.js'",
+    "unit": "tape test/*.js"
   },
+  "files": [
+    "src"
+  ],
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
   "repository": "https://github.com/cryptohub-digital/ican.js",
   "author": "CRYPTO ▪ HUB®",
   "license": "CORE",
-  "private": false
+  "private": false,
+  "engines": {
+    "node": ">= 8"
+  }
 }
