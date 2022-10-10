@@ -1,15 +1,12 @@
 # ican.js
 
 ICAN and BCAN validation, formatting and conversion in Javascript.
-Check the demo on [demo page] to try it.
-
-[demo page]: https://cryptohub-digital.github.io/ican.js/
 
 ICAN.js follows the [ISO 13616 IBAN Registry technical specification](https://www.swift.com/standards/data-standards/iban) with the addition of the Crypto addresses.
 
 ## Usage
 
-ICAN.js is compatible with both commonjs and AMD module definition. It can be used as a [node.js module](#in-nodejs) and [in the browser](#in-the-browser). It also has a bower manifest, a [Typescript definition](#with-typescript) and a [Meteor wrapper](#with-meteor-framework).
+ICAN.js is compatible with both commonjs and AMD module definition.
 
 ### NPM
 
@@ -65,6 +62,20 @@ Ican.isValid('BE68539007547034');
     * printFormat(ican, separator)
     * electronicFormat(ican)
 
+## Contributions
+
+Feel free to contribute in any way.
+
+We appreciate:
+- Fork [this repository](/fork)
+- Open [pull request](/pulls)
+- Send us some Øres / ₡ores: [cb7147879011ea207df5b35a24ca6f0859dcfb145999](https://blockindex.net/address/cb7147879011ea207df5b35a24ca6f0859dcfb145999)
+- Star this repository
+
+## Epigram
+
+> 「Cryptoni Confidimus」
+
 ## License
 
-[CORE license](LICENSE)
+Licensed under the [CORE](LICENSE) License.
