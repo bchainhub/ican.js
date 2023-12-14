@@ -22,9 +22,10 @@ interface ICANStatic {
     /**
      * @summary Check if the passed ican is valid according to this specification.
      * @param ican The ican to validate.
+     * @param onlyCrypto Check only crypto definitions.
      * @returns True if valid, false otherwise.
      */
-    isValid(ican: string): boolean;
+    isValid(ican: string, onlyCrypto: boolean): boolean;
 
     /**
      * @summary Check of the passed BCAN is valid.
@@ -32,7 +33,7 @@ interface ICANStatic {
      * @param bcan The BCAN to validate.
      * @returns True if valid, false otherwise.
      */
-    isValidBCAN(countryCode: string, bcan: string): boolean;
+    isValidBCAN(countryCode: string, bcan: string, onlyCrypto: boolean): boolean;
 
     /**
      * @summary Returns the ICAN in a print format.
@@ -60,10 +61,12 @@ declare namespace ICAN {
         readonly length: number;
         /*& the structure of the underlying BCAN (for validation and formatting) */
         readonly structure: string;
+        /** is digital asset */
+        readonly crypto: boolean;
         /** an example valid ICAN */
         readonly example: string;
         /** Check if the passed ican is valid according to this specification. */
-        isValid(ican: string): boolean;
+        isValid(ican: string, onlyCrypto: boolean): boolean;
         /**
          * Convert the passed ICAN to a country-specific BCAN.
          */
@@ -79,7 +82,7 @@ declare namespace ICAN {
          * This function only checks the format of the BCAN (length and matching the letetr/number specs) but does not
          * verify the check digit.
          */
-        isValidBCAN(bcan: string): boolean;
+        isValidBCAN(bcan: string, onlyCrypto: boolean): boolean;
     }
 }
 
