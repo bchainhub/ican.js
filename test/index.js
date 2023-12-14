@@ -18,6 +18,22 @@ samples.invalid.forEach(function (f) {
   })
 })
 
+samples.validCrypto.forEach(function (f) {
+  tape.test('OK - Check Crypto ICAN. // ICAN: <' + f.ican.substring(0, 4) + f.ican.slice(-4) + '>', function (t) {
+    let valid = ICAN.isValid(f.ican, true)
+    t.plan(1)
+    t.ok(valid, 'Valid ICAN: ' + f.ican)
+  })
+})
+
+samples.invalidCrypto.forEach(function (f) {
+  tape.test('NOK - Check Crypto ICAN. // ICAN: <' + f.ican.substring(0, 4) + f.ican.slice(-4) + '>', function (t) {
+    let valid = ICAN.isValid(f.ican, true)
+    t.plan(1)
+    t.notOk(valid, 'Invalid ICAN: ' + f.ican)
+  })
+})
+
 samples.print.forEach(function (f) {
   tape.test('OK - Print format. // ICAN: <' + f.ican.substring(0, 4) + f.ican.slice(-4) + '>', function (t) {
     let print = ICAN.printFormat(f.ican)

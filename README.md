@@ -57,8 +57,8 @@ Ican.isValid('BE68539007547034');
 
 ## API
 
-- isValid(ican)
-- toBCAN(ican, separator)
+- isValid(ican, onlyCrypto)
+- toBCAN(ican, separator, onlyCrypto)
 - fromBCAN(countryCode, bcan)
 - isValidBCAN(countryCode, bcan)
 - printFormat(ican, separator)
