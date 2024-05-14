@@ -60,9 +60,10 @@ Ican.isValid('BE68539007547034');
 - isValid(ican, onlyCrypto)
 - toBCAN(ican, separator, onlyCrypto)
 - fromBCAN(countryCode, bcan)
-- isValidBCAN(countryCode, bcan)
+- isValidBCAN(countryCode, bcan, onlyCrypto)
 - printFormat(ican, separator)
 - electronicFormat(ican)
+- shortFormat(ican, separator, frontCount, backCount)
 
 ## Contributions
 

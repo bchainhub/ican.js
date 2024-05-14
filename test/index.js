@@ -49,3 +49,11 @@ samples.electronic.forEach(function (f) {
     t.same(electronic, f.pair)
   })
 })
+
+samples.short.forEach(function (f) {
+  tape.test('OK - Short format. // ICAN: <' + f.ican.substring(0, 4) + f.ican.slice(-4) + '>', function (t) {
+    let short = ICAN.shortFormat(f.ican)
+    t.plan(1)
+    t.same(short, f.pair)
+  })
+})
