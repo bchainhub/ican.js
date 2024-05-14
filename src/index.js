@@ -443,6 +443,28 @@
     return electronicFormat(ican).replace(EVERY_FOUR_CHARS, '$1' + separator)
   }
 
+  /**
+   *
+   * @param ican
+   * @param separator
+   * @param frontCount
+   * @param backCount
+   * @returns {string}
+   */
+  exports.shortFormat = function (ican, separator, frontCount, backCount) {
+    if (typeof separator === 'undefined') {
+      separator = '…'
+    }
+    if (typeof frontCount === 'undefined') {
+      frontCount = 4
+    }
+    if (typeof backCount === 'undefined') {
+      backCount = 4
+    }
+    const electronic = electronicFormat(ican)
+    return electronic.slice(0, frontCount) + separator + electronic.slice(-backCount)
+  }
+
   exports.electronicFormat = electronicFormat
   /**
      * An object containing all the known ICAN specifications.

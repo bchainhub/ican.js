@@ -49,6 +49,15 @@ interface ICANStatic {
      * @returns The BCAN
      */
     toBCAN(ican: string, separator?: string): string;
+
+    /**
+     * @summary Returns the ICAN in a short format.
+     * @param ican The ICAN to convert.
+     * @param [separator] The separator to use between ICAN openings/endings, defaults to '…'.
+     * @param [frontCount] The number of characters to show at the beginning, defaults to 4.
+     * @param [backCount] The number of characters to show at the end, defaults to 4.
+     */
+    shortFormat(ican: string, separator?: string, frontCount?: number, backCount?: number): string;
 }
 
 declare var ICAN: ICANStatic;
