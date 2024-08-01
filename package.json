@@ -1,6 +1,6 @@
 {
   "name": "@blockchainhub/ican",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A JavaScript library to validate, format, and convert International Crypto Account Numbers (ICAN) and Basic Crypto Account Numbers (BCAN).",
   "keywords": [
     "ican",

@@ -181,7 +181,6 @@
 
   /**
      * Convert the passed BCAN to an ICAN for this country specification.
-     * This method implements the preferred algorithm described in http://en.wikipedia.org/wiki/International_Bank_Account_Number#Generating_ICAN_check_digits
      *
      * @param bcan the BCAN to convert to ICAN
      * @returns {string} the ICAN
@@ -199,7 +198,7 @@
 
   /**
      * Check of the passed BCAN is valid.
-     * This function only checks the format of the BCAN (length and matching the letetr/number specs) but does not
+     * This function only checks the format of the BCAN (length and matching the leter/number specs) but does not
      * verify the check digit.
      *
      * @param bcan the BCAN to validate
@@ -398,7 +397,6 @@
 
   /**
      * Convert the passed BCAN to an ICAN for this country specification.
-     * This method implements the preferred algorithm described in http://en.wikipedia.org/wiki/International_Bank_Account_Number#Generating_ICAN_check_digits
      *
      * @param countryCode the country of the BCAN
      * @param bcan the BCAN to convert to ICAN
