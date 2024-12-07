@@ -18,11 +18,11 @@
     "tape": "^5.9.0"
   },
   "scripts": {
-    "build": "mkdir -p dist && cp ican.js dist/index.js && cp ican.d.ts dist/index.d.ts && standard --fix 'dist/index.js'",
+    "build": "mkdir -p dist && cp ican.js dist/index.js && cp ican.d.ts dist/index.d.ts",
     "gitdiff": "npm run build && git diff --exit-code",
-    "standard": "standard 'dist/index.js'",
-    "test": "npm run build && npm run unit && npm run standard 'dist/index.js'",
-    "unit": "tape test/*.js"
+    "test": "npm run unit && npm run standard",
+    "unit": "npm run build && tape test/*.js",
+    "standard": "npx standard 'dist/**/*.js' --no-ignore"
   },
   "files": [
     "dist"
