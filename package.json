@@ -22,7 +22,7 @@
     "gitdiff": "npm run build && git diff --exit-code",
     "test": "npm run unit && npm run standard",
     "unit": "npm run build && tape test/*.js",
-    "standard": "npx standard 'dist/**/*.js' --no-ignore"
+    "standard": "npx standard 'dist/**/*.js'"
   },
   "files": [
     "dist"
