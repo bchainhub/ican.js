@@ -1,219 +1,123 @@
+/* global define */
 (function (root, factory) {
-  if (typeof define === 'function' && define.amd) { // eslint-disable-line no-undef
-    define(['exports'], factory) // eslint-disable-line no-undef
-  } else if (typeof exports === 'object' && typeof exports.nodeName !== 'string') {
-    factory(exports)
+  if (typeof define === 'function' && define.amd) {
+    define(['exports'], factory) // AMD (e.g., RequireJS)
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = factory({}) // Node.js or CommonJS
   } else {
-    factory(root.ICAN = {})
+    root.ICAN = factory({}) // Browser global
   }
 }(this, function (exports) {
-  if (!Array.prototype.map) {
-    Array.prototype.map = function (fun /*, thisArg */) { // eslint-disable-line no-extend-native
-      'use strict'
-
-      if (this === undefined || this === null) { throw new TypeError() }
-
-      const t = Object(this)
-      const len = t.length >>> 0
-      if (typeof fun !== 'function') { throw new TypeError() }
-
-      const res = new Array(len)
-      const thisArg = arguments.length >= 2 ? arguments[1] : undefined
-      for (let i = 0; i < len; i++) {
-        if (i in t) { res[i] = fun.call(thisArg, t[i], i, t) }
-      }
-
-      return res
-    }
-  }
+  'use strict'
 
   const A = 'A'.charCodeAt(0)
   const Z = 'Z'.charCodeAt(0)
+  const NON_ALPHANUM = /[^a-zA-Z0-9]/g
+  const EVERY_FOUR_CHARS = /(.{4})(?!$)/g
 
-  /**
-     * Prepare an ICAN for mod 97 computation by moving the first 4 chars to the end and transforming the letters to
-     * numbers (A = 10, B = 11, ..., Z = 35), as specified in ISO13616.
-     *
-     * @param {string} ican the ICAN
-     * @returns {string} the prepared ICAN
-     */
-  function iso13616Prepare (ican) {
-    ican = ican.toUpperCase()
-    ican = ican.slice(4) + ican.slice(0, 4);
-
-    return ican.split('').map(function (n) {
-      const code = n.charCodeAt(0)
-      if (code >= A && code <= Z) {
-        // A = 10, B = 11, ... Z = 35
-        return code - A + 10
-      } else {
-        return n
-      }
+  // Utility functions
+  const iso13616Prepare = (ican) => {
+    const rearranged = ican.slice(4) + ican.slice(0, 4)
+    return rearranged.toUpperCase().split('').map(char => {
+      const code = char.charCodeAt(0)
+      return (code >= A && code <= Z) ? code - A + 10 : char
     }).join('')
   }
 
-  /**
-     * Calculates the MOD 97 10 of the passed ICAN as specified in ISO7064.
-     *
-     * @param ican
-     * @returns {number}
-     */
-  function iso7064Mod97 (ican) {
+  const iso7064Mod97 = (ican) => {
     let remainder = ican
-    let block
-
     while (remainder.length > 2) {
-      block = remainder.slice(0, 9)
-      remainder = parseInt(block, 10) % 97 + remainder.slice(block.length)
+      const block = remainder.slice(0, 9)
+      remainder = (parseInt(block, 10) % 97).toString() + remainder.slice(block.length)
     }
-
     return parseInt(remainder, 10) % 97
   }
 
-  /**
-     * Parse the BCAN structure used to configure each ICAN Specification and returns a matching regular expression.
-     * A structure is composed of blocks of 3 characters (one letter and 2 digits). Each block represents
-     * a logical group in the typical representation of the BCAN. For each group, the letter indicates which characters
-     * are allowed in this group and the following 2-digits number tells the length of the group.
-     *
-     * @param {string} structure the structure to parse
-     * @returns {RegExp}
-     */
-  function parseStructure (structure) {
-    // split in blocks of 3 chars
-    const regex = structure.match(/(.{3})/g).map(function (block) {
-      // parse each structure block (1-char + 2-digits)
-      let format
-      const pattern = block.slice(0, 1)
-      const repeats = parseInt(block.slice(1), 10)
-
-      switch (pattern) {
-        case 'A':
-          format = '0-9A-Za-z'
-          break
-        case 'B':
-          format = '0-9A-Z'
-          break
-        case 'C':
-          format = 'A-Za-z'
-          break
-        case 'H':
-          format = '0-9A-Fa-f'
-          break
-        case 'F':
-          format = '0-9'
-          break
-        case 'L':
-          format = 'a-z'
-          break
-        case 'U':
-          format = 'A-Z'
-          break
-        case 'W':
-          format = '0-9a-z'
-          break
+  const parseStructure = (structure) => {
+    return new RegExp('^' + structure.match(/.{3}/g).map(block => {
+      const [pattern, repeats] = [block[0], parseInt(block.slice(1), 10)]
+      const formatMap = {
+        A: '0-9A-Za-z',
+        B: '0-9A-Z',
+        C: 'A-Za-z',
+        H: '0-9A-Fa-f',
+        F: '0-9',
+        L: 'a-z',
+        U: 'A-Z',
+        W: '0-9a-z'
       }
-
-      return '([' + format + ']{' + repeats + '})'
-    })
-
-    return new RegExp('^' + regex.join('') + '$')
+      return `([${formatMap[pattern]}]{${repeats}})`
+    }).join('') + '$')
   }
 
-  /**
-     *
-     * @param ican
-     * @returns {string}
-     */
-  function electronicFormat (ican) {
-    return ican.replace(NON_ALPHANUM, '').toUpperCase()
-  }
+  const electronicFormat = (ican) => ican.replace(NON_ALPHANUM, '').toUpperCase()
 
-  /**
-     * Create a new Specification for a valid ICAN number.
-     *
-     * @param countryCode the code of the country
-     * @param length the length of the ICAN
-     * @param structure the structure of the underlying BCAN (for validation and formatting)
-     * @param example an example valid ICAN
-     * @constructor
-     */
-  function Specification (countryCode, length, structure, crypto, example) {
-    this.countryCode = countryCode
-    this.length = length
-    this.structure = structure
-    this.crypto = crypto
-    this.example = example
-  }
-
-  /**
-     * Lazy-loaded regex (parse the structure and construct the regular expression the first time we need it for validation)
-     */
-  Specification.prototype._regex = function () {
-    return this._cachedRegex || (this._cachedRegex = parseStructure(this.structure))
-  }
-
-  /**
-     * Check if the passed ican is valid according to this specification.
-     *
-     * @param {String} ican the ican to validate
-     * @param {Boolean} onlyCrypto check only digital assets
-     * @returns {boolean} true if valid, false otherwise
-     */
-  Specification.prototype.isValid = function (ican, onlyCrypto = false) {
-    return this.length === ican.length &&
-            this.countryCode === ican.slice(0, 2) &&
-            (!onlyCrypto || this.crypto) &&
-            this._regex().test(ican.slice(4)) &&
-            iso7064Mod97(iso13616Prepare(ican)) === 1
-  }
-
-  /**
-     * Convert the passed ICAN to a country-specific BCAN.
-     *
-     * @param ican the ICAN to convert
-     * @param separator the separator to use between BCAN blocks
-     * @returns {string} the BCAN
-     */
-  Specification.prototype.toBCAN = function (ican, separator) {
-    return this._regex().exec(ican.slice(4)).slice(1).join(separator)
-  }
-
-  /**
-     * Convert the passed BCAN to an ICAN for this country specification.
-     *
-     * @param bcan the BCAN to convert to ICAN
-     * @returns {string} the ICAN
-     */
-  Specification.prototype.fromBCAN = function (bcan) {
-    if (!this.isValidBCAN(bcan)) {
-      throw new Error('Invalid BCAN')
+  // Specification class
+  class Specification {
+    constructor (countryCode, length, structure, crypto, example) {
+      this.countryCode = countryCode
+      this.length = length
+      this.structure = structure
+      this.crypto = this.normalizeCrypto(crypto)
+      this.example = example
     }
 
-    const remainder = iso7064Mod97(iso13616Prepare(this.countryCode + '00' + bcan))
-    const checkDigit = ('0' + (98 - remainder)).slice(-2)
+    normalizeCrypto (crypto) {
+      if (crypto === 'main' || crypto === 'mainnet') return 'main'
+      if (crypto === 'test' || crypto === 'testnet') return 'test'
+      if (crypto === 'enter' || crypto === 'enterprise') return 'enter'
+      return crypto
+    }
 
-    return this.countryCode + checkDigit + bcan
+    get regex () {
+      if (!this._cachedRegex) {
+        this._cachedRegex = parseStructure(this.structure)
+      }
+      return this._cachedRegex
+    }
+
+    isValid (ican, onlyCrypto = false) {
+      ican = electronicFormat(ican)
+      return this.length === ican.length &&
+        this.countryCode === ican.slice(0, 2) &&
+        (!onlyCrypto || this.isMatchingCrypto(onlyCrypto)) &&
+        this.regex.test(ican.slice(4)) &&
+        iso7064Mod97(iso13616Prepare(ican)) === 1
+    }
+
+    isMatchingCrypto (onlyCrypto) {
+      if (typeof onlyCrypto === 'string') {
+        if (onlyCrypto === 'mainnet') onlyCrypto = 'main'
+        else if (onlyCrypto === 'testnet') onlyCrypto = 'test'
+        else if (onlyCrypto === 'enterprise') onlyCrypto = 'enter'
+      }
+      if (onlyCrypto === true) return this.crypto !== false
+      return this.crypto === onlyCrypto
+    }
+
+    toBCAN (ican, separator = ' ') {
+      return this.regex.exec(ican.slice(4)).slice(1).join(separator)
+    }
+
+    fromBCAN (bcan) {
+      if (!this.isValidBCAN(bcan)) throw new Error('Invalid BCAN')
+      const remainder = iso7064Mod97(iso13616Prepare(this.countryCode + '00' + bcan))
+      const checkDigit = ('0' + (98 - remainder)).slice(-2)
+      return this.countryCode + checkDigit + bcan
+    }
+
+    isValidBCAN (bcan, onlyCrypto = false) {
+      return this.length - 4 === bcan.length &&
+        (!onlyCrypto || this.isMatchingCrypto(onlyCrypto)) &&
+        this.regex.test(bcan)
+    }
   }
 
-  /**
-     * Check of the passed BCAN is valid.
-     * This function only checks the format of the BCAN (length and matching the leter/number specs) but does not
-     * verify the check digit.
-     *
-     * @param bcan the BCAN to validate
-     * @returns {boolean} true if the passed bcan is a valid BCAN according to this specification, false otherwise
-     */
-  Specification.prototype.isValidBCAN = function (bcan, onlyCrypto = false) {
-    return this.length - 4 === bcan.length &&
-            (!onlyCrypto || this.crypto) &&
-            this._regex().test(bcan)
-  }
-
+  // Country specifications
   const countries = {}
 
-  function addSpecification (ICAN) {
-    countries[ICAN.countryCode] = ICAN
+  const addSpecification = (spec) => {
+    countries[spec.countryCode] = spec
   }
 
   addSpecification(new Specification('AD', 24, 'F04F04A12', false, 'AD1200012030200359100100'))
@@ -339,133 +243,48 @@
 
   // Digital Assets
 
-  // Core Blockchain Mainnet
-  addSpecification(new Specification('CB', 44, 'H40', true, 'CB661234567890ABCDEF1234567890ABCDEF12345678'))
-  // Core Blockchain Testnet - Devín
-  addSpecification(new Specification('AB', 44, 'H40', true, 'AB841234567890ABCDEF1234567890ABCDEF12345678'))
-  // Core Enterprise Blockchain Enterprise
-  addSpecification(new Specification('CE', 44, 'H40', true, 'CE571234567890ABCDEF1234567890ABCDEF12345678'))
+  // Core Blockchain - Mainnet
+  addSpecification(new Specification('CB', 44, 'H40', 'main', 'CB661234567890ABCDEF1234567890ABCDEF12345678'))
+  // Core Blockchain - Testnet [Devín]
+  addSpecification(new Specification('AB', 44, 'H40', 'test', 'AB841234567890ABCDEF1234567890ABCDEF12345678'))
+  // Core Blockchain - Enterprise [Koliba]
+  addSpecification(new Specification('CE', 44, 'H40', 'enter', 'CE571234567890ABCDEF1234567890ABCDEF12345678'))
 
-  const NON_ALPHANUM = /[^a-zA-Z0-9]/g
-  const EVERY_FOUR_CHARS = /(.{4})(?!$)/g
-
-  /**
-     * Utility function to check if a variable is a String.
-     *
-     * @param v
-     * @returns {boolean} true if the passed variable is a String, false otherwise.
-     */
-  function isString (v) {
-    return (typeof v === 'string' || v instanceof String)
-  }
-
-  /**
-     * Check if an ICAN is valid.
-     *
-     * @param {String} ican the ICAN to validate.
-     * @returns {boolean} true if the passed ICAN is valid, false otherwise
-     */
-  exports.isValid = function (ican, onlyCrypto = false) {
-    if (!isString(ican)) {
-      return false
-    }
+  // Exports
+  exports.isValid = (ican, onlyCrypto = false) => {
+    if (typeof ican !== 'string') return false
     ican = electronicFormat(ican)
-    const countryStructure = countries[ican.slice(0, 2)]
-    return !!countryStructure &&
-            (!onlyCrypto || countryStructure.crypto) &&
-            countryStructure.isValid(ican)
+    const spec = countries[ican.slice(0, 2)]
+    return spec ? spec.isValid(ican, onlyCrypto) : false
   }
 
-  /**
-     * Convert an ICAN to a BCAN.
-     *
-     * @param ican
-     * @param {String} [separator] the separator to use between the blocks of the BCAN, defaults to ' '
-     * @returns {string} the BCAN
-     */
-  exports.toBCAN = function (ican, separator) {
-    if (typeof separator === 'undefined') {
-      separator = ' '
-    }
+  exports.toBCAN = (ican, separator) => {
     ican = electronicFormat(ican)
-    const countryStructure = countries[ican.slice(0, 2)]
-    if (!countryStructure) {
-      throw new Error('No country with code ' + ican.slice(0, 2))
-    }
-    return countryStructure.toBCAN(ican, separator)
+    const spec = countries[ican.slice(0, 2)]
+    if (!spec) throw new Error('No country with code ' + ican.slice(0, 2))
+    return spec.toBCAN(ican, separator)
   }
 
-  /**
-     * Convert the passed BCAN to an ICAN for this country specification.
-     *
-     * @param countryCode the country of the BCAN
-     * @param bcan the BCAN to convert to ICAN
-     * @returns {string} the ICAN
-     */
-  exports.fromBCAN = function (countryCode, bcan) {
-    const countryStructure = countries[countryCode]
-    if (!countryStructure) {
-      throw new Error('No country with code ' + countryCode)
-    }
-    return countryStructure.fromBCAN(electronicFormat(bcan))
+  exports.fromBCAN = (countryCode, bcan) => {
+    const spec = countries[countryCode]
+    if (!spec) throw new Error('No country with code ' + countryCode)
+    return spec.fromBCAN(electronicFormat(bcan))
   }
 
-  /**
-     * Check the validity of the passed BCAN.
-     *
-     * @param countryCode the country of the BCAN
-     * @param bcan the BCAN to check the validity of
-     * @param {Boolean} onlyCrypto check only digital assets
-     * @returns {boolean} true if the passed BCAN is a valid BCAN for the country, false otherwise
-     */
-  exports.isValidBCAN = function (countryCode, bcan, onlyCrypto = false) {
-    if (!isString(bcan)) {
-      return false
-    }
-    const countryStructure = countries[countryCode]
-    return countryStructure &&
-            (!onlyCrypto || countryStructure.crypto) &&
-            countryStructure.isValidBCAN(electronicFormat(bcan))
+  exports.isValidBCAN = (countryCode, bcan, onlyCrypto = false) => {
+    const spec = countries[countryCode]
+    return spec ? spec.isValidBCAN(electronicFormat(bcan), onlyCrypto) : false
   }
 
-  /**
-     *
-     * @param ican
-     * @param separator
-     * @returns {string}
-     */
-  exports.printFormat = function (ican, separator) {
-    if (typeof separator === 'undefined') {
-      separator = ' '
-    }
-    return electronicFormat(ican).replace(EVERY_FOUR_CHARS, '$1' + separator)
-  }
+  exports.printFormat = (ican, separator = ' ') => electronicFormat(ican).replace(EVERY_FOUR_CHARS, '$1' + separator)
 
-  /**
-   *
-   * @param ican
-   * @param separator
-   * @param frontCount
-   * @param backCount
-   * @returns {string}
-   */
-  exports.shortFormat = function (ican, separator, frontCount, backCount) {
-    if (typeof separator === 'undefined') {
-      separator = '…'
-    }
-    if (typeof frontCount === 'undefined') {
-      frontCount = 4
-    }
-    if (typeof backCount === 'undefined') {
-      backCount = 4
-    }
-    const electronic = electronicFormat(ican)
-    return electronic.slice(0, frontCount) + separator + electronic.slice(-backCount)
+  exports.shortFormat = (ican, separator = '…', frontCount = 4, backCount = 4) => {
+    const formatted = electronicFormat(ican)
+    return formatted.slice(0, frontCount) + separator + formatted.slice(-backCount)
   }
 
   exports.electronicFormat = electronicFormat
-  /**
-     * An object containing all the known ICAN specifications.
-     */
   exports.countries = countries
+
+  return exports
 }))

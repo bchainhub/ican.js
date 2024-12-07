@@ -26,6 +26,22 @@ samples.validCrypto.forEach(function (f) {
   })
 })
 
+samples.validMainnetCrypto.forEach(function (f) {
+  tape.test('OK - Check Crypto Mainnet ICAN. // ICAN: <' + f.ican.substring(0, 4) + f.ican.slice(-4) + '>', function (t) {
+    let valid = ICAN.isValid(f.ican, 'main')
+    t.plan(1)
+    t.ok(valid, 'Valid ICAN: ' + f.ican)
+  })
+})
+
+samples.validTestnetCrypto.forEach(function (f) {
+  tape.test('OK - Check Crypto Testnet ICAN. // ICAN: <' + f.ican.substring(0, 4) + f.ican.slice(-4) + '>', function (t) {
+    let valid = ICAN.isValid(f.ican, 'testnet')
+    t.plan(1)
+    t.ok(valid, 'Valid ICAN: ' + f.ican)
+  })
+})
+
 samples.invalidCrypto.forEach(function (f) {
   tape.test('NOK - Check Crypto ICAN. // ICAN: <' + f.ican.substring(0, 4) + f.ican.slice(-4) + '>', function (t) {
     let valid = ICAN.isValid(f.ican, true)

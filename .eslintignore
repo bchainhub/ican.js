@@ -1,0 +1,4 @@
+node_modules/
+test/**/*.js
+# Ensure dist is not ignored by standard
+!dist/

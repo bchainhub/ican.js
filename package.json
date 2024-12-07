@@ -1,6 +1,6 @@
 {
   "name": "@blockchainhub/ican",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A JavaScript library to validate, format, and convert International Crypto Account Numbers (ICAN) and Basic Crypto Account Numbers (BCAN).",
   "keywords": [
     "ican",
@@ -14,21 +14,21 @@
     "convert"
   ],
   "devDependencies": {
-    "standard": "^17.1.0",
-    "tape": "^5.7.5"
+    "standard": "^17.1.2",
+    "tape": "^5.9.0"
   },
   "scripts": {
-    "build": "cp ican.js src/index.js && standard --fix 'src/index.js'",
+    "build": "mkdir -p dist && cp ican.js dist/index.js && cp ican.d.ts dist/index.d.ts",
     "gitdiff": "npm run build && git diff --exit-code",
-    "standard": "standard 'src/index.js'",
-    "test": "npm run unit && npm run standard 'src/index.js'",
-    "unit": "tape test/*.js"
+    "test": "npm run unit && npm run standard",
+    "unit": "npm run build && tape test/*.js",
+    "standard": "npm run build && npx standard 'dist/**/*.js'"
   },
   "files": [
-    "src"
+    "dist"
   ],
-  "main": "src/index.js",
-  "types": "src/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/bchainhub/ican.js",
   "author": "Blockchain Hub",
   "license": "CORE",

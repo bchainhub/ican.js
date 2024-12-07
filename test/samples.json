@@ -53,6 +53,22 @@
       "ican": "AB306E3B05B80977A67BCBD330AB5F8DAF756FB4191C"
     }
   ],
+  "validMainnetCrypto": [
+    {
+      "ican": "cb71dda309844cb29462a4e7fd5d3ece3088323d178c"
+    },
+    {
+      "ican": "cb06acf799cef468f3f745fb5c4e28fb8a85d3d979d5"
+    }
+  ],
+  "validTestnetCrypto": [
+    {
+      "ican": "ab59796210a3fe3c24d433197af05ef54c33279ba80d"
+    },
+    {
+      "ican": "ab9620e80e1aaf554e2d2a18bd25fbac59fcd5bf046d"
+    }
+  ],
   "invalidCrypto": [
     {
       "ican": "LC01HEMM000100010012001200023015"
