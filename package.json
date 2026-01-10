@@ -33,6 +33,10 @@
   "author": "Blockchain Hub",
   "license": "CORE",
   "private": false,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
   "engines": {
     "node": ">= 8"
   }
