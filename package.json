@@ -29,7 +29,10 @@
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "https://github.com/bchainhub/ican.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bchainhub/ican.js.git"
+  },
   "author": "Blockchain Hub",
   "license": "CORE",
   "private": false,
