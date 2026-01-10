@@ -34,10 +34,10 @@ body:
     id: implementation
     attributes:
       label: Implementation
-      description: Describe implementation with example of the code.
+      description: Describe the implementation with an example of the code.
 
   - type: textarea
     id: additional
     attributes:
       label: Additional context
-      description: Please, place additional content or screenshots.
+      description: Please provide additional content or screenshots.

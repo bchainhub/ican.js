@@ -67,10 +67,15 @@ interface ICANStatic {
 	 * @param ican The ICAN to convert.
 	 * @param [separator] The separator to use between ICAN openings/endings, defaults to '…'.
 	 * @param [frontCount] The number of characters to show at the beginning, defaults to 4.
-	 * @param [backCount] The number of characters to show at the end, defaults to 4.
-	 * @returns The shortened ICAN.
+	 * @param [backCount] The number of characters to show at the end (and middle for strength 3-4), defaults to 4.
+	 * @param [strength] The number of elements to show (1-4), defaults to 2.
+	 * - `1` = Show only endings (last backCount characters).
+	 * - `2` = Show beginning (frontCount) and end (backCount).
+	 * - `3` = Show beginning (frontCount), middle (backCount), and end (backCount).
+	 * - `4` = Show extended beginning (2x frontCount), middle (backCount), and end (backCount).
+	 * @returns The shortened ICAN. Returns full ICAN if not enough characters to compose the format.
 	 */
-	shortFormat(ican: string, separator?: string, frontCount?: number, backCount?: number): string;
+	shortFormat(ican: string, separator?: string, frontCount?: number, backCount?: number, strength?: number): string;
 }
 
 declare var ICAN: ICANStatic;

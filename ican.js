@@ -278,9 +278,111 @@
 
   exports.printFormat = (ican, separator = ' ') => electronicFormat(ican).replace(EVERY_FOUR_CHARS, '$1' + separator)
 
-  exports.shortFormat = (ican, separator = '…', frontCount = 4, backCount = 4) => {
+  exports.shortFormat = (ican, separator = '…', frontCount = 4, backCount = 4, strength = 2) => {
     const formatted = electronicFormat(ican)
-    return formatted.slice(0, frontCount) + separator + formatted.slice(-backCount)
+    const len = formatted.length
+
+    // Validate strength parameter
+    if (strength < 1 || strength > 4) {
+      strength = 2
+    }
+
+    // Strength 1: Show only endings
+    if (strength === 1) {
+      if (len <= backCount) {
+        return formatted
+      }
+      return separator + formatted.slice(-backCount)
+    }
+
+    // Strength 2: Show beginning and end (current behavior)
+    if (strength === 2) {
+      if (len <= frontCount + backCount) {
+        return formatted
+      }
+      return formatted.slice(0, frontCount) + separator + formatted.slice(-backCount)
+    }
+
+    // Strength 3: Show beginning, middle, and end
+    if (strength === 3) {
+      const totalNeeded = frontCount + backCount + backCount
+      if (len < totalNeeded) {
+        return formatted
+      }
+      // Calculate middle position: positioned in the earlier part of available space between front and end
+      // Available space: from frontCount to (len - backCount)
+      const availableStart = frontCount
+      const availableEnd = len - backCount
+      const availableLength = availableEnd - availableStart
+      // Position middle in the earlier-middle area: calculate center of available space minus backCount, then offset slightly earlier
+      const middleOffset = Math.floor((availableLength - backCount) / 2) - 1
+      const middleStart = Math.max(availableStart, availableStart + middleOffset)
+      const middleEnd = middleStart + backCount
+      // Ensure middle doesn't overlap with end
+      if (middleEnd > availableEnd) {
+        return formatted
+      }
+      // Check if middle would overlap with front
+      if (middleStart < frontCount) {
+        return formatted
+      }
+      // Check if front and middle would touch - no delimiter needed
+      if (middleStart === frontCount) {
+        // Check if middle and end would touch
+        if (middleEnd === availableEnd) {
+          return formatted
+        }
+        return formatted.slice(0, middleEnd) + separator + formatted.slice(-backCount)
+      }
+      // Check if middle and end would touch - no delimiter needed
+      if (middleEnd === availableEnd) {
+        return formatted.slice(0, frontCount) + separator + formatted.slice(middleStart)
+      }
+      return formatted.slice(0, frontCount) + separator + formatted.slice(middleStart, middleEnd) + separator + formatted.slice(-backCount)
+    }
+
+    // Strength 4: Show extended beginning (2x frontCount or more), middle, and end
+    if (strength === 4) {
+      const totalNeeded = frontCount + backCount + backCount
+      if (len < totalNeeded) {
+        return formatted
+      }
+      // Calculate middle position (same as strength 3)
+      const availableStart = frontCount
+      const availableEnd = len - backCount
+      const availableLength = availableEnd - availableStart
+      const middleOffset = Math.floor((availableLength - backCount) / 2) - 1
+      const middleStart = Math.max(availableStart, availableStart + middleOffset)
+      const middleEnd = middleStart + backCount
+      // Ensure middle doesn't overlap with end
+      if (middleEnd > availableEnd) {
+        return formatted
+      }
+      // Extend front up to 2*frontCount, but check for overlap with middle
+      const desiredExtendedFront = 2 * frontCount
+      // Check if extended front would overlap with middle
+      if (desiredExtendedFront > middleStart && desiredExtendedFront < middleEnd) {
+        return formatted // Front would overlap with middle, show full
+      }
+      // Check if extended front would extend beyond middle start
+      const extendedFront = Math.min(desiredExtendedFront, middleStart)
+      // Check if front and middle would touch - no delimiter needed
+      if (extendedFront === middleStart) {
+        // Front reaches middle, check if middle and end would touch
+        if (middleEnd === availableEnd) {
+          return formatted // All parts touch, show full
+        }
+        return formatted.slice(0, middleEnd) + separator + formatted.slice(-backCount)
+      }
+      // Check if middle and end would touch - no delimiter needed
+      if (middleEnd === availableEnd) {
+        return formatted.slice(0, extendedFront) + separator + formatted.slice(middleStart)
+      }
+      return formatted.slice(0, extendedFront) + separator + formatted.slice(middleStart, middleEnd) + separator + formatted.slice(-backCount)
+    }
+
+    // Fallback (should not reach here)
+    return formatted
   }
 
   exports.electronicFormat = electronicFormat

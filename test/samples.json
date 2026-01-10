@@ -118,5 +118,135 @@
       "ican": "CB71 4787 9011 EA20 7DF5 B35A 24CA 6F08 59DC FB14 5999",
       "pair": "CB71…5999"
     }
+  ],
+  "shortStrength1": [
+    {
+      "ican": "BE68539007547034",
+      "pair": "…7034"
+    },
+    {
+      "ican": "CB7147879011EA207DF5B35A24CA6F0859DCFB145999",
+      "pair": "…5999"
+    },
+    {
+      "ican": "ABCDEFGHIJ",
+      "pair": "…GHIJ"
+    },
+    {
+      "ican": "ABCDEFGHIJKL",
+      "pair": "…IJKL"
+    },
+    {
+      "ican": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "pair": "…WXYZ"
+    },
+    {
+      "ican": "ABC",
+      "pair": "ABC"
+    }
+  ],
+  "shortStrength2": [
+    {
+      "ican": "BE68539007547034",
+      "pair": "BE68…7034"
+    },
+    {
+      "ican": "CB7147879011EA207DF5B35A24CA6F0859DCFB145999",
+      "pair": "CB71…5999"
+    },
+    {
+      "ican": "ABCDEFGHIJ",
+      "pair": "ABCD…GHIJ"
+    },
+    {
+      "ican": "ABCDEFGHIJKL",
+      "pair": "ABCD…IJKL"
+    },
+    {
+      "ican": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "pair": "ABCD…WXYZ"
+    },
+    {
+      "ican": "ABC",
+      "pair": "ABC"
+    }
+  ],
+  "shortStrength3": [
+    {
+      "ican": "BE68539007547034",
+      "pair": "BE68…3900…7034"
+    },
+    {
+      "ican": "CB7147879011EA207DF5B35A24CA6F0859DCFB145999",
+      "pair": "CB71…5B35…5999"
+    },
+    {
+      "ican": "ABCDEFGHIJ",
+      "pair": "ABCDEFGHIJ"
+    },
+    {
+      "ican": "ABCDEFGHIJKL",
+      "pair": "ABCDEFGHIJKL"
+    },
+    {
+      "ican": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "pair": "ABCD…KLMN…WXYZ"
+    },
+    {
+      "ican": "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456",
+      "pair": "ABCD…NOPQ…3456"
+    },
+    {
+      "ican": "ABC",
+      "pair": "ABC"
+    }
+  ],
+  "shortStrength4": [
+    {
+      "ican": "BE68539007547034",
+      "pair": "BE68539007547034"
+    },
+    {
+      "ican": "CB7147879011EA207DF5B35A24CA6F0859DCFB145999",
+      "pair": "CB714787…5B35…5999"
+    },
+    {
+      "ican": "ABCDEFGHIJ",
+      "pair": "ABCDEFGHIJ"
+    },
+    {
+      "ican": "ABCDEFGHIJKL",
+      "pair": "ABCDEFGHIJKL"
+    },
+    {
+      "ican": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "pair": "ABCDEFGH…KLMN…WXYZ"
+    },
+    {
+      "ican": "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456",
+      "pair": "ABCDEFGH…NOPQ…3456"
+    },
+    {
+      "ican": "ABC",
+      "pair": "ABC"
+    }
+  ],
+  "shortTouchCases": [
+    {
+      "ican": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "desc": "Middle and end touch - no delimiter between them (strength 4)",
+      "strength": 4,
+      "frontCount": 4,
+      "backCount": 6,
+      "pair": "ABCDEFGH…IJKLMNOPQRSTUVWXYZ"
+    },
+    {
+      "ican": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "desc": "Middle and end touch - no delimiter between them (strength 3)",
+      "strength": 3,
+      "frontCount": 4,
+      "backCount": 6,
+      "pair": "ABCD…IJKLMNOPQRSTUVWXYZ"
+    }
   ]
 }
