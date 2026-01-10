@@ -6,12 +6,12 @@ body:
   - type: markdown
     attributes:
       value: |
-        Please, provide as much details as possible to make proper evaluation and in the end resolve the bug report faster.
+        Please provide as many details as possible to make a proper evaluation and in the end resolve the bug report faster.
 
   - type: markdown
     attributes:
       value: |
-        Software specific details.
+        Software-specific details.
 
   - type: input
     id: os
@@ -26,7 +26,7 @@ body:
     id: bug
     attributes:
       label: Bug
-      description: Describe the Bug.
+      description: Describe the bug.
       placeholder: Bug description
     validations:
       required: true
@@ -60,4 +60,4 @@ body:
     id: additional
     attributes:
       label: Additional context
-      description: Please, place additional content or screenshots.
+      description: Please provide additional content or screenshots.

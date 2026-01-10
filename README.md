@@ -68,9 +68,9 @@ console.log(ICAN.isValid('BE68539007547034')); // true
   - `onlyCrypto`: (Optional) Restrict validation to crypto definitions. Possible values:
     - `true`: Include all crypto networks.
     - `false`: Exclude crypto networks.
-    - `'main'`: Mainnets.
-    - `'test'`: Testnets.
-    - `'enter'`: Enterprise networks.
+    - `'main'` or `'mainnet'`: Mainnets.
+    - `'test'` or `'testnet'`: Testnets.
+    - `'enter'` or `'enterprise'`: Enterprise networks.
 
 #### `toBCAN(ican, separator)`
 
@@ -92,7 +92,7 @@ console.log(ICAN.isValid('BE68539007547034')); // true
 - **Parameters**:
   - `countryCode`: The country code of the BCAN.
   - `bcan`: The BCAN to validate.
-  - `onlyCrypto`: (Optional) Restrict validation to crypto definitions (same values as `isValid`).
+  - `onlyCrypto`: (Optional) Restrict validation to crypto definitions. Accepts the same values as `isValid` (`'main'`/`'mainnet'`, `'test'`/`'testnet'`, `'enter'`/`'enterprise'`).
 
 #### `printFormat(ican, separator)`
 
@@ -105,14 +105,42 @@ console.log(ICAN.isValid('BE68539007547034')); // true
 
 - Converts an ICAN to its electronic format (removing non-alphanumeric characters and uppercasing).
 
-#### `shortFormat(ican, separator, frontCount, backCount)`
+#### `shortFormat(ican, separator, frontCount, backCount, strength)`
 
 - Produces a shortened version of the ICAN with a custom separator.
 - **Parameters**:
   - `ican`: The ICAN to shorten.
   - `separator`: (Optional) The separator to use (default is `'…'`).
   - `frontCount`: (Optional) Number of characters to display at the start (default is `4`).
-  - `backCount`: (Optional) Number of characters to display at the end (default is `4`).
+  - `backCount`: (Optional) Number of characters to display at the end and middle parts (default is `4`).
+  - `strength`: (Optional) Number of elements to show, from 1 to 4 (default is `2`):
+    - `1`: Show only endings (last `backCount` characters), e.g., `…0123`.
+    - `2`: Show beginning (`frontCount`) and end (`backCount`), e.g., `CB12…0123`.
+    - `3`: Show beginning (`frontCount`), middle (`backCount`), and end (`backCount`), e.g., `CB12…5B35…0123`. The middle is positioned in the earlier-middle area of the available space.
+    - `4`: Show extended beginning (2×`frontCount`), middle (`backCount`), and end (`backCount`), e.g., `CB714787…5B35…0123`. Uses the same middle position as strength 3.
+- **Returns**: The shortened ICAN. Returns the full ICAN if:
+  - There are not enough characters to compose the requested format
+  - Parts would overlap with each other
+  - Parts would touch each other (no delimiter needed, so full string is shown)
+
+- **Edge Cases**:
+  - If parts touch (front reaches middle, or middle reaches end), the continuous section is shown without an additional delimiter between them
+  - Invalid `strength` values (< 1 or > 4) default to `2`
+  - The middle position is calculated consistently for strengths 3 and 4, ensuring the same middle segment is shown in both cases
+
+- **Examples**:
+
+```js
+const ican = 'CB7147879011EA207DF5B35A24CA6F0859DCFB145999'
+
+ICAN.shortFormat(ican)                              // 'CB71…5999' (default: strength 2)
+ICAN.shortFormat(ican, '…', 4, 4, 1)                // '…5999' (endings only)
+ICAN.shortFormat(ican, '…', 4, 4, 2)                // 'CB71…5999' (beginning + end)
+ICAN.shortFormat(ican, '…', 4, 4, 3)                // 'CB71…5B35…5999' (beginning + middle + end)
+ICAN.shortFormat(ican, '…', 4, 4, 4)                // 'CB714787…5B35…5999' (extended + middle + end)
+ICAN.shortFormat(ican, '-', 4, 4, 3)                // 'CB71-5B35-5999' (custom separator)
+ICAN.shortFormat(ican, '…', 6, 6, 3)                // 'CB7147…F5B35A…145999' (custom counts)
+```
 
 ### Variables
 
@@ -120,8 +148,9 @@ console.log(ICAN.isValid('BE68539007547034')); // true
 - `bcan`: A country-specific Base Crypto Account Number.
 - `countryCode`: The country code for the BCAN.
 - `separator`: A separator to format ICAN or BCAN strings.
-- `onlyCrypto`: A filter for crypto validation (values: `true`, `false`, `'main'`, `'test'`, `'enter'`).
+- `onlyCrypto`: A filter for crypto validation. Accepts `true`, `false`, `'main'`/`'mainnet'`, `'test'`/`'testnet'`, or `'enter'`/`'enterprise'`.
 - `frontCount` and `backCount`: Define how many characters to include in the `shortFormat` method.
+- `strength`: Controls how many elements to show in `shortFormat` (1-4, default is 2).
 
 ## Contributions
 
